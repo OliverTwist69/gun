@@ -1,0 +1,13 @@
+{
+  "permissions": {
+    "allow": [
+      "WebSearch",
+      "Bash(./gradlew build *)",
+      "Bash(./gradlew compileDebugKotlin --stacktrace)",
+      "Bash(where java *)",
+      "Bash(mkdir -p \"/c/Users/girsh/Desktop/strup-app\")",
+      "Read(//c/Users/girsh/Desktop/**)",
+      "Bash(mkdir *)"
+    ]
+  }
+}
