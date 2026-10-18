@@ -18,7 +18,7 @@ mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/freelance
 
 // Базовые маршруты
 app.get('/api/health', (req, res) => {
-  res.json({ status: 'OK', message: 'Freelancer API is running' });
+  res.json({ status: 'OK', message: 'FreelanceGirsh API is running' });
 });
 
 // Маршруты

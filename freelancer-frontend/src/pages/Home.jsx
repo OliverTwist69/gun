@@ -14,7 +14,7 @@ const Home = () => {
               Найди идеального фрилансера для своего проекта
             </h1>
             <p className="hero-subtitle">
-              FreelanceHub соединяет клиентов и фрилансеров со всего мира.
+              FreelanceGirsh соединяет клиентов и фрилансеров со всего мира.
               Создавай проекты, находи исполнителей и расти вместе с нами.
             </p>
             <div className="hero-buttons">
@@ -114,7 +114,7 @@ const Home = () => {
         <div className="container">
           <div className="benefits-content">
             <div className="benefits-text">
-              <h2 className="section-title">Почему выбирают FreelanceHub</h2>
+              <h2 className="section-title">Почему выбирают FreelanceGirsh</h2>
               <ul className="benefits-list">
                 <li>✅ Безопасная система оплаты</li>
                 <li>✅ Гарантия качества работы</li>

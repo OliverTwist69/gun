@@ -15,7 +15,7 @@ const Navbar = () => {
       <div className="navbar-container">
         <div className="navbar-brand">
           <Link to="/" className="navbar-logo">
-            FreelanceHub
+            FreelanceGirsh
           </Link>
         </div>
 
