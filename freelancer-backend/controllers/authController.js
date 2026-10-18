@@ -152,6 +152,32 @@ exports.updateProfile = async (req, res) => {
   }
 };
 
+// Загрузка аватара
+exports.uploadAvatar = async (req, res) => {
+  try {
+    if (!req.file) {
+      return res.status(400).json({ message: 'No file uploaded' });
+    }
+
+    const avatarUrl = `/uploads/${req.file.filename}`;
+
+    const user = await User.findByIdAndUpdate(
+      req.user._id,
+      { $set: { avatar: avatarUrl } },
+      { new: true, runValidators: true }
+    ).select('-password');
+
+    res.json({
+      message: 'Avatar uploaded successfully',
+      user,
+      avatarUrl
+    });
+  } catch (error) {
+    console.error('Upload avatar error:', error);
+    res.status(500).json({ message: 'Failed to upload avatar', error: error.message });
+  }
+};
+
 // Выход (на клиенте просто удалить токен)
 exports.logout = (req, res) => {
   res.json({ message: 'Logged out successfully' });

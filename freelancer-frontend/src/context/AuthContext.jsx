@@ -97,6 +97,17 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
+  const reloadUser = async () => {
+    if (token) {
+      try {
+        const response = await axios.get(`${API_URL}/auth/me`);
+        setUser(response.data.user);
+      } catch (error) {
+        console.error('Failed to reload user:', error);
+      }
+    }
+  };
+
   const value = {
     user,
     token,
@@ -105,6 +116,7 @@ export const AuthProvider = ({ children }) => {
     login,
     logout,
     updateProfile,
+    reloadUser,
     isAuthenticated: !!user
   };
 
