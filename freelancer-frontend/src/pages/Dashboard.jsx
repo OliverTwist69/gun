@@ -92,7 +92,7 @@ const Dashboard = () => {
         <div className="quick-actions">
           <Link to="/projects/create" className="action-card">
             <div className="action-icon">➕</div>
-            <h3>Создать проект</h3>
+            <h3>Создать проект1333</h3>
             <p>Опубликовать новый проект для фрилансеров</p>
           </Link>
           <Link to="/my-orders" className="action-card">
