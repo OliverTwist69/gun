@@ -1,8 +1,30 @@
 import { Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { useState, useRef } from 'react';
 
 const Home = () => {
   const { isAuthenticated, user } = useAuth();
+  const imageRef = useRef(null);
+  const [rotation, setRotation] = useState({ x: 0, y: 0 });
+
+  const handleMouseMove = (e) => {
+    if (!imageRef.current) return;
+
+    const rect = imageRef.current.getBoundingClientRect();
+    const centerX = rect.width / 2;
+    const centerY = rect.height / 2;
+    const mouseX = e.clientX - rect.left;
+    const mouseY = e.clientY - rect.top;
+
+    const rotateX = (mouseY - centerY) / 10;
+    const rotateY = (centerX - mouseX) / 10;
+
+    setRotation({ x: rotateX, y: rotateY });
+  };
+
+  const handleMouseLeave = () => {
+    setRotation({ x: 0, y: 0 });
+  };
 
   return (
     <div className="home-page">
@@ -43,12 +65,25 @@ const Home = () => {
 
       {/* Картинка */}
       <section className="image-section">
-        <div className="container">
+        <div className="container" style={{ perspective: '1000px', display: 'flex', justifyContent: 'center' }}>
           <img
+            ref={imageRef}
             src="/cartinka.png"
             alt="Платформа FreelanceGirsh"
             className="featured-image"
-            style={{ width: '300px', height: '200px', objectFit: 'cover', borderRadius: '8px', marginTop: '10px' }}
+            onMouseMove={handleMouseMove}
+            onMouseLeave={handleMouseLeave}
+            style={{
+              width: '300px',
+              height: '200px',
+              objectFit: 'cover',
+              borderRadius: '8px',
+              marginTop: '10px',
+              transform: `rotateX(${rotation.x}deg) rotateY(${rotation.y}deg)`,
+              transition: 'transform 0.1s ease-out',
+              cursor: 'pointer',
+              boxShadow: '0 10px 30px rgba(0, 0, 0, 0.3)'
+            }}
           />
         </div>
       </section>
