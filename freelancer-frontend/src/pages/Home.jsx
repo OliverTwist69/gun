@@ -41,6 +41,18 @@ const Home = () => {
         </div>
       </section>
 
+      {/* Картинка */}
+      <section className="image-section">
+        <div className="container">
+          <img
+            src="/cartinka.png"
+            alt="Платформа FreelanceGirsh"
+            className="featured-image"
+            style={{ width: '300px', height: '200px', objectFit: 'cover', borderRadius: '8px' }}
+          />
+        </div>
+      </section>
+
       {/* Как это работает */}
       <section className="how-it-works">
         <div className="container">
