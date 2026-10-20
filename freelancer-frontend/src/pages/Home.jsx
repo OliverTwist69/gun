@@ -48,7 +48,7 @@ const Home = () => {
             src="/cartinka.png"
             alt="Платформа FreelanceGirsh"
             className="featured-image"
-            style={{ width: '300px', height: '200px', objectFit: 'cover', borderRadius: '8px', marginTop: '10cm' }}
+            style={{ width: '300px', height: '200px', objectFit: 'cover', borderRadius: '8px', marginTop: '10px' }}
           />
         </div>
       </section>
