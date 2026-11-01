@@ -1,0 +1,27 @@
+services:
+  - type: web
+    name: freelancer-backend
+    env: node
+    region: frankfurt
+    plan: free
+    buildCommand: cd freelancer-backend && npm install
+    startCommand: cd freelancer-backend && npm start
+    envVars:
+      - key: MONGODB_URI
+        scope: run
+        value: mongodb+srv://phantom96oliver_db_user:h8ZV3aVGxWqP0Gf3@cluster0.rlk4nz9.mongodb.net/godfreelance?retryWrites=true&w=majority&appName=Cluster0
+      - key: JWT_SECRET
+        scope: run
+        value: FreelanceGirsh_JWT_Secret_2024_Production_Key_SuperSecure
+      - key: JWT_EXPIRE
+        scope: run
+        value: 7d
+      - key: NODE_ENV
+        scope: run
+        value: production
+      - key: FRONTEND_URL
+        scope: run
+        value: https://gun-r1ny7wrci-eugene9.vercel.app
+      - key: PORT
+        scope: run
+        value: 5000
