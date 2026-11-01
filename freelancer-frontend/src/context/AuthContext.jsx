@@ -3,6 +3,8 @@ import axios from 'axios';
 
 const API_URL = 'https://gun-4m4j.onrender.com/api';
 
+console.log('AuthContext initialized with API_URL:', API_URL);
+
 const AuthContext = createContext();
 
 export const useAuth = () => {
@@ -17,6 +19,7 @@ export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [token, setToken] = useState(localStorage.getItem('token'));
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     if (token) {
@@ -32,12 +35,14 @@ export const AuthProvider = ({ children }) => {
     const loadUser = async () => {
       if (token) {
         try {
-          const response = await axios.get(`${API_URL}/auth/me`, {
-            timeout: 5000
-          });
+          console.log('Loading user with token...');
+          const response = await axios.get(`${API_URL}/auth/me`);
+          console.log('User loaded:', response.data.user);
           setUser(response.data.user);
-        } catch (error) {
-          console.error('Failed to load user:', error);
+          setError(null);
+        } catch (err) {
+          console.error('Failed to load user:', err.message, err.response?.status);
+          setError(err.message);
           logout();
         }
       }
@@ -49,69 +54,67 @@ export const AuthProvider = ({ children }) => {
 
   const register = async (userData) => {
     try {
-      const response = await axios.post(`${API_URL}/auth/register`, userData, {
-        timeout: 10000
-      });
+      console.log('Registering user:', userData.username);
+      const response = await axios.post(`${API_URL}/auth/register`, userData);
+      console.log('Registration successful');
       setToken(response.data.token);
       setUser(response.data.user);
+      setError(null);
       return { success: true, data: response.data };
-    } catch (error) {
-      console.error('Registration failed:', error);
-      return {
-        success: false,
-        error: error.response?.data?.message || error.message || 'Registration failed'
-      };
+    } catch (err) {
+      console.error('Registration failed:', err.message, err.response?.data);
+      const errorMsg = err.response?.data?.message || err.message || 'Registration failed';
+      setError(errorMsg);
+      return { success: false, error: errorMsg };
     }
   };
 
   const login = async (credentials) => {
     try {
-      const response = await axios.post(`${API_URL}/auth/login`, credentials, {
-        timeout: 10000
-      });
+      console.log('Logging in user:', credentials.emailOrUsername);
+      const response = await axios.post(`${API_URL}/auth/login`, credentials);
+      console.log('Login successful');
       setToken(response.data.token);
       setUser(response.data.user);
+      setError(null);
       return { success: true, data: response.data };
-    } catch (error) {
-      console.error('Login failed:', error);
-      return {
-        success: false,
-        error: error.response?.data?.message || error.message || 'Login failed'
-      };
+    } catch (err) {
+      console.error('Login failed:', err.message, err.response?.data);
+      const errorMsg = err.response?.data?.message || err.message || 'Login failed';
+      setError(errorMsg);
+      return { success: false, error: errorMsg };
     }
   };
 
   const logout = () => {
     setToken(null);
     setUser(null);
+    setError(null);
     localStorage.removeItem('token');
   };
 
   const updateProfile = async (profileData) => {
     try {
-      const response = await axios.put(`${API_URL}/auth/profile`, profileData, {
-        timeout: 10000
-      });
+      const response = await axios.put(`${API_URL}/auth/profile`, profileData);
       setUser(response.data.user);
+      setError(null);
       return { success: true, data: response.data };
-    } catch (error) {
-      console.error('Update profile failed:', error);
-      return {
-        success: false,
-        error: error.response?.data?.message || error.message || 'Update failed'
-      };
+    } catch (err) {
+      console.error('Update profile failed:', err.message);
+      const errorMsg = err.response?.data?.message || err.message || 'Update failed';
+      setError(errorMsg);
+      return { success: false, error: errorMsg };
     }
   };
 
   const reloadUser = async () => {
     if (token) {
       try {
-        const response = await axios.get(`${API_URL}/auth/me`, {
-          timeout: 5000
-        });
+        const response = await axios.get(`${API_URL}/auth/me`);
         setUser(response.data.user);
-      } catch (error) {
-        console.error('Failed to reload user:', error);
+        setError(null);
+      } catch (err) {
+        console.error('Failed to reload user:', err.message);
       }
     }
   };
@@ -125,7 +128,8 @@ export const AuthProvider = ({ children }) => {
     logout,
     updateProfile,
     reloadUser,
-    isAuthenticated: !!user
+    isAuthenticated: !!user,
+    error
   };
 
   return (

@@ -7,15 +7,20 @@ require('dotenv').config();
 const app = express();
 
 const corsOptions = {
-  origin: process.env.FRONTEND_URL || 'http://localhost:5173',
+  origin: ['https://gun-r1ny7wrci-eugene9.vercel.app', 'http://localhost:5173', 'http://localhost:3000'],
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization']
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  optionsSuccessStatus: 200
 };
 
 app.use(cors(corsOptions));
-app.use(express.json());
+app.use(express.json({ limit: '10mb' }));
+app.use(express.urlencoded({ limit: '10mb', extended: true }));
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+
+console.log('MongoDB URI:', process.env.MONGODB_URI ? 'Set' : 'Not set');
+console.log('Frontend URL:', process.env.FRONTEND_URL || 'Not set');
 
 mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/freelancer')
   .then(() => console.log('MongoDB connected'))
@@ -34,7 +39,7 @@ app.use('/api/users', userRoutes);
 app.use('/api/projects', projectRoutes);
 
 app.use((err, req, res, next) => {
-  console.error(err.stack);
+  console.error('Error:', err.stack);
   res.status(err.status || 500).json({
     message: err.message || 'Internal server error',
   });
@@ -43,4 +48,5 @@ app.use((err, req, res, next) => {
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
+  console.log(`CORS enabled for:`, corsOptions.origin);
 });
