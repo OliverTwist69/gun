@@ -1,7 +1,17 @@
 import { createContext, useState, useContext, useEffect } from 'react';
 import axios from 'axios';
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+const getApiUrl = () => {
+  if (import.meta.env.VITE_API_URL) {
+    return import.meta.env.VITE_API_URL;
+  }
+  if (typeof window !== 'undefined' && window.location.hostname !== 'localhost') {
+    return `${window.location.protocol}//${window.location.hostname.replace('gun-r1ny7wrci-eugene9.vercel.app', 'freelancer-backend.onrender.com')}/api`;
+  }
+  return 'http://localhost:5000/api';
+};
+
+const API_URL = getApiUrl();
 
 const AuthContext = createContext();
 
@@ -18,7 +28,6 @@ export const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
   const [token, setToken] = useState(localStorage.getItem('token'));
 
-  // Настройка axios
   useEffect(() => {
     if (token) {
       axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
@@ -29,12 +38,13 @@ export const AuthProvider = ({ children }) => {
     }
   }, [token]);
 
-  // Загрузка текущего пользователя
   useEffect(() => {
     const loadUser = async () => {
       if (token) {
         try {
-          const response = await axios.get(`${API_URL}/auth/me`);
+          const response = await axios.get(`${API_URL}/auth/me`, {
+            timeout: 5000
+          });
           setUser(response.data.user);
         } catch (error) {
           console.error('Failed to load user:', error);
@@ -49,7 +59,9 @@ export const AuthProvider = ({ children }) => {
 
   const register = async (userData) => {
     try {
-      const response = await axios.post(`${API_URL}/auth/register`, userData);
+      const response = await axios.post(`${API_URL}/auth/register`, userData, {
+        timeout: 10000
+      });
       setToken(response.data.token);
       setUser(response.data.user);
       return { success: true, data: response.data };
@@ -57,14 +69,16 @@ export const AuthProvider = ({ children }) => {
       console.error('Registration failed:', error);
       return {
         success: false,
-        error: error.response?.data?.message || 'Registration failed'
+        error: error.response?.data?.message || error.message || 'Registration failed'
       };
     }
   };
 
   const login = async (credentials) => {
     try {
-      const response = await axios.post(`${API_URL}/auth/login`, credentials);
+      const response = await axios.post(`${API_URL}/auth/login`, credentials, {
+        timeout: 10000
+      });
       setToken(response.data.token);
       setUser(response.data.user);
       return { success: true, data: response.data };
@@ -72,7 +86,7 @@ export const AuthProvider = ({ children }) => {
       console.error('Login failed:', error);
       return {
         success: false,
-        error: error.response?.data?.message || 'Login failed'
+        error: error.response?.data?.message || error.message || 'Login failed'
       };
     }
   };
@@ -85,14 +99,16 @@ export const AuthProvider = ({ children }) => {
 
   const updateProfile = async (profileData) => {
     try {
-      const response = await axios.put(`${API_URL}/auth/profile`, profileData);
+      const response = await axios.put(`${API_URL}/auth/profile`, profileData, {
+        timeout: 10000
+      });
       setUser(response.data.user);
       return { success: true, data: response.data };
     } catch (error) {
       console.error('Update profile failed:', error);
       return {
         success: false,
-        error: error.response?.data?.message || 'Update failed'
+        error: error.response?.data?.message || error.message || 'Update failed'
       };
     }
   };
@@ -100,7 +116,9 @@ export const AuthProvider = ({ children }) => {
   const reloadUser = async () => {
     if (token) {
       try {
-        const response = await axios.get(`${API_URL}/auth/me`);
+        const response = await axios.get(`${API_URL}/auth/me`, {
+          timeout: 5000
+        });
         setUser(response.data.user);
       } catch (error) {
         console.error('Failed to reload user:', error);
@@ -126,3 +144,5 @@ export const AuthProvider = ({ children }) => {
     </AuthContext.Provider>
   );
 };
+
+export default AuthContext;
