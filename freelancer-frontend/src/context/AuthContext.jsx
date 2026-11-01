@@ -1,17 +1,7 @@
 import { createContext, useState, useContext, useEffect } from 'react';
 import axios from 'axios';
 
-const getApiUrl = () => {
-  if (import.meta.env.VITE_API_URL) {
-    return import.meta.env.VITE_API_URL;
-  }
-  if (typeof window !== 'undefined' && window.location.hostname !== 'localhost') {
-    return `${window.location.protocol}//${window.location.hostname.replace('gun-r1ny7wrci-eugene9.vercel.app', 'freelancer-backend.onrender.com')}/api`;
-  }
-  return 'http://localhost:5000/api';
-};
-
-const API_URL = getApiUrl();
+const API_URL = 'https://gun-4m4j.onrender.com/api';
 
 const AuthContext = createContext();
 
